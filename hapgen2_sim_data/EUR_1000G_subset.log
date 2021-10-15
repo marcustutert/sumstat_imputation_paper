@@ -1,0 +1,31 @@
+PLINK v2.00aLM 64-bit Intel (24 Jul 2017)
+Options in effect:
+  --chr 22
+  --export hapslegend
+  --from-bp 1
+  --keep hapgen2_sim_data/ancestry_id
+  --out hapgen2_sim_data/EUR_1000G_subset
+  --pfile /well/mcvean/mtutert/sumstat_imputation_paper/1000G/plink/1000G_chr22_plink
+  --to-bp 17100000
+
+Hostname: rescomp1.hpc.in.bmrc.ox.ac.uk
+Working directory: /gpfs3/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper
+Start time: Wed Oct  6 13:21:26 2021
+
+Random number seed: 1633522886
+385575 MB RAM detected; reserving 192787 MB for main workspace.
+Using up to 24 threads (change this with --threads).
+2504 samples (0 females, 0 males, 2504 ambiguous; 2504 founders) loaded from
+/well/mcvean/mtutert/sumstat_imputation_paper/1000G/plink/1000G_chr22_plink.psam.
+1097199 variants loaded from
+/well/mcvean/mtutert/sumstat_imputation_paper/1000G/plink/1000G_chr22_plink.pvar.
+Note: No phenotype data present.
+--keep: 503 samples remaining.
+503 samples (0 females, 0 males, 503 ambiguous; 503 founders) remaining after
+main filters.
+19521 variants remaining after main filters.
+Writing hapgen2_sim_data/EUR_1000G_subset.legend ... done.
+Writing hapgen2_sim_data/EUR_1000G_subset.haps ... done.
+Writing hapgen2_sim_data/EUR_1000G_subset.sample ... done.
+
+End time: Wed Oct  6 13:21:27 2021

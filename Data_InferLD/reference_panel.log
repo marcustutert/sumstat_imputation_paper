@@ -1,0 +1,48 @@
+PLINK v2.00aLM 64-bit Intel (25 Jun 2017)
+Options in effect:
+  --allow-extra-chr
+  --export hapslegend
+  --extract snps_to_extract
+  --haps HAPGEN2_EUR_simulated.controls.haps
+  --legend HAPGEN2_EUR_simulated.legend 22
+  --maf 0.0001
+  --out /well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel
+
+Hostname: rescomp2.hpc.in.bmrc.ox.ac.uk
+Working directory: /gpfs3/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/hapgen2_sim_data
+Start time: Fri Oct  8 11:44:25 2021
+
+Random number seed: 1633689865
+385575 MB RAM detected; reserving 192787 MB for main workspace.
+Using up to 24 threads (change this with --threads).
+--haps + --legend: 19506 variants scanned.
+--haps + --legend:
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel-temporary.pgen
++
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel-temporary.psam
++
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel-temporary.pvar
+written.
+1000 samples (0 females, 0 males, 1000 ambiguous; 1000 founders) loaded from
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel-temporary.psam.
+19506 variants loaded from
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel-temporary.pvar.
+Note: No phenotype data present.
+--extract: 2602 variants remaining.
+1000 samples (0 females, 0 males, 1000 ambiguous; 1000 founders) remaining
+after main filters.
+Calculating allele frequencies... done.
+31 variants removed due to minor allele threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+2571 variants remaining after main filters.
+Writing
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel.legend
+... done.
+Writing
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel.haps
+... done.
+Writing
+/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/Data_InferLD/reference_panel.sample
+... done.
+
+End time: Fri Oct  8 11:44:25 2021

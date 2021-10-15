@@ -1,0 +1,13 @@
+* using log directory ‘/gpfs3/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper/InferLD.Rcheck’
+* using R version 4.0.0 (2020-04-24)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* using session charset: UTF-8
+* checking for file ‘InferLD/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘InferLD’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ...

@@ -1,0 +1,39 @@
+====================================
+               FIZI v0.7.2             
+====================================
+fizi munge
+	hapgen2_sim_data/full_sumstats_mungeable
+	--out hapgen2_sim_data/full_sumstats_munged
+	--N 2000
+	--ignore Z
+
+Starting log...
+[2021-10-08 10:35:26 - INFO] Interpreting column names as follows:
+[2021-10-08 10:35:26 - INFO] rsid: Variant ID (e.g., rs number)
+[2021-10-08 10:35:26 - INFO] BP: Base position
+[2021-10-08 10:35:26 - INFO] A2: Allele 2, interpreted as non-ref allele for signed sumstat
+[2021-10-08 10:35:26 - INFO] A1: Allele 1, interpreted as ref allele for signed sumstat
+[2021-10-08 10:35:26 - INFO] info: INFO score (imputation quality; higher --> better imputation)
+[2021-10-08 10:35:26 - INFO] P: p-Value
+[2021-10-08 10:35:26 - INFO] BETA: [linear/logistic] regression coefficient (0 --> no effect; above 0 --> A1 is trait/risk increasing)
+[2021-10-08 10:35:26 - INFO] SE: Standard error of the beta
+[2021-10-08 10:35:26 - INFO] CHR: Chromsome
+[2021-10-08 10:35:26 - INFO] Reading sumstats from hapgen2_sim_data/full_sumstats_mungeable into memory 5000000 SNPs at a time
+[2021-10-08 10:35:26 - INFO] Reading SNP chunk 1
+[2021-10-08 10:35:26 - INFO] Done reading SNP chunks
+[2021-10-08 10:35:26 - INFO] Read 19506 SNPs from --sumstats file
+[2021-10-08 10:35:26 - INFO] Removed 16904 SNPs with missing values
+[2021-10-08 10:35:26 - INFO] Removed 0 SNPs with INFO <= 0.9
+[2021-10-08 10:35:26 - INFO] Removed 0 SNPs with MAF <= 0.01
+[2021-10-08 10:35:26 - INFO] Removed 0 SNPs with out-of-bounds p-values
+[2021-10-08 10:35:26 - INFO] 2602 SNPs remain
+[2021-10-08 10:35:26 - INFO] Removed 0 SNPs with duplicated rs numbers (2602 SNPs remain).
+[2021-10-08 10:35:26 - INFO] Using N = 2000.0
+[2021-10-08 10:35:26 - INFO] Median value of BETA was 0.009160175, which seems sensible.
+[2021-10-08 10:35:26 - INFO] Writing summary statistics for 2602 SNPs (2602 with nonmissing beta) to hapgen2_sim_data/full_sumstats_munged.sumstats.gz.
+[2021-10-08 10:35:26 - INFO] METADATA - Mean chi^2 = 0.817
+[2021-10-08 10:35:26 - WARNING] METADATA: Mean chi^2 may be too small
+[2021-10-08 10:35:26 - INFO] METADATA - Lambda GC = 0.742
+[2021-10-08 10:35:26 - INFO] METADATA - Max chi^2 = 10.546
+[2021-10-08 10:35:26 - INFO] METADATA - 0 Genome-wide significant SNPs (some may have been removed by filtering)
+[2021-10-08 10:35:26 - INFO] Conversion finished

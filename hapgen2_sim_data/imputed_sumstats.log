@@ -1,0 +1,27 @@
+====================================
+               FIZI v0.7.2             
+====================================
+fizi impute
+	hapgen2_sim_data/genotyped_sumstats_munged
+	hapgen2_sim_data/ref_panel
+	--out hapgen2_sim_data/imputed_sumstats
+	--min-prop 0.0001
+	--verbose
+	--window-size 1499205
+	--ridge-term 0.9
+
+Starting log...
+[2021-10-11 10:40:19 - INFO] Preparing GWAS summary file
+[2021-10-11 10:40:19 - INFO] Preparing reference SNP data
+[2021-10-11 10:40:19 - INFO] Starting summary statistics imputation with window size 1499205.0 and buffer size 250000.0
+[2021-10-11 10:40:19 - DEBUG] Subsetting GWAS data by 22:15800678 - 22:17349883
+[2021-10-11 10:40:19 - DEBUG] Subsetting reference SNP data by 22:15800678 - 22:17349883
+[2021-10-11 10:40:19 - INFO] Starting imputation at region 22:16050678 - 22:17099883
+[2021-10-11 10:40:19 - DEBUG] Proportion of observed-SNPs / total-SNPs = 0.704
+[2021-10-11 10:40:19 - DEBUG] Flipped 0 alleles to match reference
+[2021-10-11 10:40:19 - DEBUG] Estimating LD for 2053 SNPs
+[2021-10-11 10:40:19 - DEBUG] Partitioning LD into quadrants
+[2021-10-11 10:40:19 - DEBUG] Computing inverse of variance-covariance matrix for 1445 observed SNPs
+[2021-10-11 10:40:20 - DEBUG] Imputing 608 SNPs from 1445 observed scores
+[2021-10-11 10:40:20 - INFO] Completed imputation at region 22:16050678 - 22:17099883
+[2021-10-11 10:40:20 - INFO] Finished summary statistic imputation
