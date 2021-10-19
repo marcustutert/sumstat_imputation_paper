@@ -7,9 +7,9 @@
 
 
 #####Source InferLD code#####
-system("R CMD build InferLD")
-install.packages("InferLD_0.1.0.tar.gz", repos = NULL)
-library(InferLD)
+# system("R CMD build InferLD")
+# install.packages("InferLD_0.1.0.tar.gz", repos = NULL)
+# library(InferLD)
 #system("R CMD check InferLD")
 
 ###### Helper Functions ######
@@ -280,12 +280,6 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
                        case_control_constant)                     #These is the legend file (IMPUTE2 format)
   
 {
-  # Only include the SNPs in the genotyped summary statistics panel that are in the reference (munged)
-  # Make sure that the reference panel does not have any SNPs at 0%
-  filter_and_match_SNPs(munged_genotyped_summary_statistics = munged_genotyped_summary_statistics,
-                        reference_haplotypes                = reference_haplotypes,
-                        reference_legend                    = reference_legend, 
-                        inference = T)
 
   #Read in the filtered files (haplotypes/sumstats/reference)
   munged_genotyped_summary_statistics_filtered = fread("hapgen2_sim_data/genotyped_sumstats_filtered", header = T)
@@ -300,15 +294,17 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
     inference_results = LD_inference(ref_panel_haplotypes = reference_haplotypes_filtered,
                                      fst                   = 0.1,
                                      alpha                 = 1e3,
-                                     nSamples              = 5,
+                                     nSamples              = 3,
                                      weights_resolution    = 10,
                                      likelihood_toggle     = T, 
                                      gwas_variance         = GWAS_variance,
-                                     case_control_constant = case_control_constant,
+                                     case_control_constant = 500,
                                      BurnIn                = 0.9,
                                      debug                 = T)
-    saveRDS(inference_results, "inference_results/inference.RData")
+  saveRDS(inference_results, "inference_results/inference.RData")
   }
+  
+  #Read in inference results
   x = readRDS("inference_results/inference.RData")
   
   #Get the diagnostics from this inference run
@@ -316,24 +312,25 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
   Gibbs_Results_Posterior = x$Gibbs_Array[,floor((0.9*ncol(x$Gibbs_Array))):ncol(x$Gibbs_Array)]
   #Get the average of the weights
   wts = rowMeans(Gibbs_Results_Posterior, na.rm = T)
-  
-  #Calculate our inferred LD (across all SNPs) with these weights
-  filter_and_match_SNPs(munged_genotyped_summary_statistics = munged_genotyped_summary_statistics,
-                        reference_haplotypes                = reference_haplotypes,
-                        reference_legend                    = reference_legend, 
-                        inference = F)
-  
+  # 
+  # #Calculate our inferred LD (across all SNPs) with these weights
+  # filter_and_match_SNPs(munged_genotyped_summary_statistics = munged_genotyped_summary_statistics,
+  #                       reference_haplotypes                = reference_haplotypes,
+  #                       reference_legend                    = reference_legend, 
+  #                       inference = F)
+  # 
   #Read in the filtered files (haplotypes/sumstats/reference)
   munged_genotyped_summary_statistics = fread("hapgen2_sim_data/genotyped_sumstats_filtered", header = T)
   reference_haplotypes                = (fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F))
-  reference_legend                    = fread("hapgen2_sim_data/reference_legend_filtered", header = T)
-
-  #Calculate LD given the wts
-  inferred_LD = (cov.wt(x = reference_haplotypes, wt = wts, cor = T))$cor
+  reference_legend                    = fread("hapgen2_sim_data/reference_panel.legend", header = T)
+  reference_haplotypes_all            = t((fread("hapgen2_sim_data/reference_panel.haps", header = F)))
   
+  #Calculate LD given the wts
+  inferred_LD = (cov.wt(x = reference_haplotypes_all, wt = wts, cor = T))$cor
+  # 
   #Get the index of all typed SNPs (SNPs in the sumstats and in the reference panel)
   typed_snps_index   = which(reference_legend$id %in% munged_genotyped_summary_statistics$SNP)
-  untyped_snps_index = setdiff(1:ncol(reference_haplotypes),typed_snps_index)
+  untyped_snps_index = setdiff(1:ncol(reference_haplotypes_all),typed_snps_index)
   #Perform sumstat imputation (by hand)
   imputed_zs = sumstat_impute(typed_snps         = typed_snps_index,
                               untyped_snps_index = untyped_snps_index,
@@ -342,19 +339,16 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
   #Extract imputed_zs
   imputed_results = cbind(reference_legend[untyped_snps_index,]$id,imputed_zs)
   colnames(imputed_results) = c("SNP","Z")
+  print(dim(imputed_results))
   write.table(imputed_results, file = "imputation_results/imputation_test", quote = F, col.names = T, row.names = F)
-  inference_diagnostics()
-  return()
+  #inference_diagnostics()
+  # return()
 }
 
 #Function to see how well inference does at recapturing the r2 correlation compared to the reference panel
 inference_diagnostics = function(reference_legend) #Read in the full reference legend file
 {
-  
-  filter_and_match_SNPs(reference_haplotypes                = "hapgen2_sim_data/reference_panel.haps",
-                        reference_legend                    = "hapgen2_sim_data/reference_panel.legend",
-                        munged_genotyped_summary_statistics = "hapgen2_sim_data/genotyped_sumstats_munged",
-                        inference                           = T)
+
   #Read in the inference results
   inference_results = readRDS("inference_results/inference.RData")
   #Calculate AF correlation (post-burnIn)
@@ -365,33 +359,155 @@ inference_diagnostics = function(reference_legend) #Read in the full reference l
   #Read in the SNPTEST file in order
   SNPTEST     = fread("hapgen2_sim_data/EUR_GWAS_SNPTEST_results", skip = 10)
   #Read in the reference legend (not-filtered)
-  reference_legend = fread("hapgen2_sim_data/reference_legend_filtered", header = T)
+  reference_legend_filtered = fread("hapgen2_sim_data/reference_legend_filtered", header = T)
   #Extract the SNPs from reference legend file within the SNPTEST file
-  true_afs = SNPTEST$all_maf[which(SNPTEST$rsid %in% reference_legend$id)]
+  true_afs = SNPTEST$all_maf[which(SNPTEST$rsid %in% reference_legend_filtered$id)]
   #Convert AFs to the MAF 
   inferred_af[inferred_af > 0.5] <- 1 - inferred_af[inferred_af > 0.5]
   #Get correlation
   r2_correlation_full = signif(summary(lm(inferred_af~true_afs))$r.squared,3)
   #Plot both the correlation with the true allele frequencies and the imputed allele frequencies (included and withheld SNPs)
-  reference_haplotypes = fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F)
-  reference_af         = colMeans(reference_haplotypes)
+  reference_haplotypes_filtered = fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F)
+  reference_af         = colMeans(reference_haplotypes_filtered)
   #Convert AFs to the MAF 
   reference_af[reference_af > 0.5] <- 1 - reference_af[reference_af > 0.5]
-  #Plot the reference correlation
-  all_afs = plot_ly(y = inferred_af, x = true_afs, type = "scatter", mode = "markers", themes="Catherine", name = "Inference") %>%
-    layout(showlegend = F, annotations = list(text = sprintf("r2 = %s",r2_correlation_full), showarrow = F, x= 0.25,
-                                              y= 0.01,
-                                              xref = "x",
-                                              yref = "y",
-                                              showarrow = T,
-                                              ax = 0,
-                                              ay = -0), 
+
+  #Also find the AF of the imputed SNPs (those not included in InferLD inference process)
+  #Find out what SNP IDs those are
+  #Read in the non-filtered SNP IDs
+  reference_legend_all     = fread("hapgen2_sim_data/reference_panel.legend", header = T)   #All SNPs 
+  reference_haplotypes_all = t(fread("hapgen2_sim_data/reference_panel.haps", header = F))  #All SNPs 
+  
+  #Find SNPs in reference legend that are not in the filtered file
+  snps_ids_imputed        = reference_legend_all[which(!reference_legend_all$id %in% reference_legend_filtered$id)]$id
+  snp_ids_imputed_index   = which(!reference_legend_all$id %in% reference_legend_filtered$id)
+  #Get the inferred allele frequencies from these imputed SNPs
+  #Read in inference results
+  x = readRDS("inference_results/inference.RData")
+  #Get the diagnostics from this inference run
+  #Extract the post-burnin weights
+  Gibbs_Results_Posterior = x$Gibbs_Array[,floor((0.9*ncol(x$Gibbs_Array))):ncol(x$Gibbs_Array)]
+  #Get the average of the weights
+  wts = rowMeans(Gibbs_Results_Posterior, na.rm = T)/sum(rowMeans(Gibbs_Results_Posterior, na.rm = T))
+  inferred_af_imputed      = colSums(as.matrix(reference_haplotypes_all)[,c(snp_ids_imputed_index)] * wts)
+  reference_imputed_af     = colMeans(as.matrix(reference_haplotypes_all)[,c(snp_ids_imputed_index)])
+  true_imputed_af          = SNPTEST$all_maf[which(SNPTEST$rsid %in% snps_ids_imputed)]
+  #Flip the MAF to less than 0.5
+  #Convert AFs to the MAF 
+  inferred_af_imputed[inferred_af_imputed > 0.5] <- 1 - inferred_af_imputed[inferred_af_imputed > 0.5]
+  reference_imputed_af[reference_imputed_af > 0.5] <- 1 - reference_imputed_af[reference_imputed_af > 0.5]
+  true_imputed_af[true_imputed_af > 0.5] <- 1 - true_imputed_af[true_imputed_af > 0.5]
+  
+  #Get all the necessary r2s #TO-DO
+  
+  #Plot the results
+  all_afs = plot_ly(y = inferred_af, x = true_afs, type = "scatter", mode = "markers", themes="Catherine", name = "Inferred (Genotyped): r2 ") %>%
+    layout(showlegend = T, 
            xaxis = list(title = 'True Allele Frequencies'), 
            yaxis = list(title = 'Inferred Allele Frequencies'),
            title = "Allele Frequency Inference")
-  all_afs <- all_afs %>% add_trace(x =true_afs,  y = reference_af, name = 'Reference', mode = 'markers')
+  all_afs <- all_afs %>% add_trace(x =true_afs,  y = reference_af, name = 'Reference (Genotyped): r2', mode = 'markers')
+  all_afs <- all_afs %>% add_trace(x =true_imputed_af,  y = inferred_af_imputed, mode = 'markers', name = 'Inferred (Imputed): r2')
+  all_afs <- all_afs %>% add_trace(x =true_imputed_af,  y = reference_imputed_af, mode = 'markers', name = 'Reference (Imputed): r2')
   
+  #Get the LD diagnostics, nowe we split up the LD into four groups (eg: typed-untyped/typed-typed/untyped-untyped/typed-untyped)
+  
+  #Get the reference LD
+  reference_LD = LD_Matrix(reference_haplotypes_all)
+  #Get the true LD, read in the GWAS haplotypes
+  case_GWAS_haplotypes    = t(fread("hapgen2_sim_data/HAPGEN2_EUR_simulated.cases.haps", header = F))
+  control_GWAS_haplotypes = t(fread("hapgen2_sim_data/HAPGEN2_EUR_simulated.controls.haps", header = F))
+  #Cbind them together
+  GWAS_haplotypes         = rbind(case_GWAS_haplotypes,control_GWAS_haplotypes)
+  #Read in the GWAS legend
+  GWAS_legend       = fread("hapgen2_sim_data/HAPGEN2_EUR_simulated.legend", header = T)
+  GWAS_SNPs_index   = which(GWAS_legend$rs %in% reference_legend_all$id)
+  GWAS_haplotypes   = GWAS_haplotypes[,c(GWAS_SNPs_index)]
+  #Get the GWAS LD
+  GWAS_LD = LD_Matrix(GWAS_haplotypes)
+  #Get the Inferred LD (across all SNPs)
+  inferred_LD = (cov.wt(x = reference_haplotypes_all, wt = wts, cor = T))$cor
+  
+  #Typed-Typed
+  true_LD_typed_typed      = GWAS_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  inferred_LD_typed_typed  = inferred_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  reference_LD_typed_typed = reference_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  #Get indexes of sampled typed-typed
+  typed_indexes_subsample = sample(1:nrow(true_LD_typed_typed), size = 500)
+  plot(true_LD_typed_typed[typed_indexes_subsample,typed_indexes_subsample],inferred_LD_typed_typed[typed_indexes_subsample,typed_indexes_subsample])
+  
+  #Typed-Untyped
+  true_LD_typed_untyped      = GWAS_LD[c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  inferred_LD_typed_untyped  = inferred_LD[c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  reference_LD_typed_untyped = reference_LD[c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  #Untyped-Untyped
+  true_LD_untyped_untyped      = GWAS_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  inferred_LD_untyped_untyped  = inferred_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  reference_LD_untyped_untyped = reference_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  #Untyped-Typed
+  true_LD_untyped_typed      = GWAS_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  inferred_LD_untyped_typed  = inferred_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  reference_LD_untyped_typed = reference_LD[-c(snp_ids_imputed_index),-c(snp_ids_imputed_index)]
+  
+  #Plot the AF
   return(plotly_build(all_afs))
+}
+
+evaluate_InferLD_sumstat_accuracy = function(){
+  imputed_snps = fread("imputation_results/imputation_test")
+  #Compare this to the true data
+  #Load in the unmasked full dataset
+  full_sumstats = fread("hapgen2_sim_data/full_sumstats_munged.sumstats", header = T)
+  #Load in the imputed stuff from fizie
+  #Merge together the data
+  comparison_set = inner_join(imputed_snps,full_sumstats, by = "SNP")
+  
+  #PLot the r2 and graph for the full dataset
+  r2_correlation_full = signif(summary(lm(comparison_set$Z.x~comparison_set$Z.y))$r.squared,4)
+  #Plot and mark the r2 correlation)
+  all_correlation = plot_ly(x = comparison_set$Z.x, y = comparison_set$Z.y, type = "scatter", mode = "markers", themes="Catherine") %>%
+    layout(showlegend = F, annotations = list(text = sprintf("r2 = %s",r2_correlation_full), showarrow = F, x= 2,
+                                              y= -2,
+                                              xref = "x",
+                                              yref = "y",
+                                              showarrow = T,
+                                              ax = 20,
+                                              ay = -40), 
+           xaxis = list(title = 'Imputed Zscores'), 
+           yaxis = list(title = 'True (Genotyped) Zscores'),
+           title = "Correlation True to Imputed Zscores (ALL)")
+  
+  #PLot the r2 and graph for the common variants
+  snptest_results = fread("hapgen2_sim_data/full_sumstats_mungeable", header = T)
+  comparison_set_common = inner_join(comparison_set,snptest_results, by = "BP") %>% filter(all_maf > 0.05)
+  r2_correlation_common = signif(summary(lm(comparison_set_common$Z.x~comparison_set_common$Z.y))$r.squared,4)
+  common_correlation = plot_ly(x = comparison_set_common$Z.x, y = comparison_set_common$Z.y, type = "scatter", mode = "markers", themes="Catherine") %>%
+    layout(showlegend = F, annotations = list(text = sprintf("r2 = %s",r2_correlation_common), showarrow = F, x= 2,
+                                              y= -2,
+                                              xref = "x",
+                                              yref = "y",
+                                              showarrow = T,
+                                              ax = 20,
+                                              ay = -40),  
+           xaxis = list(title = 'Imputed Zscores'), 
+           yaxis = list(title = 'True (Genotyped) Zscores'),
+           title = "Correlation True to Imputed Zscores (Common)")
+  comparison_set_rare = inner_join(comparison_set,snptest_results, by = "BP") %>% filter(all_maf < 0.05)
+  r2_correlation_rare = signif(summary(lm(comparison_set_rare$Z.x~comparison_set_rare$Z.y))$r.squared,4)
+  rare_correlation = plot_ly(x = comparison_set_rare$Z.x, y = comparison_set_rare$Z.y, type = "scatter", mode = "markers", themes="Catherine") %>%
+    layout(showlegend = F, annotations = list(text = sprintf("r2 = %s",r2_correlation_rare), showarrow = F, x= 2,
+                                              y= -2,
+                                              xref = "x",
+                                              yref = "y",
+                                              showarrow = T,
+                                              ax = 20,
+                                              ay = -40), 
+           xaxis = list(title = 'Imputed Zscores'), 
+           yaxis = list(title = 'True (Genotyped) Zscores'),
+           title = "Correlation True to Imputed Zscores (Rare)")
+  correlation = subplot(all_correlation,rare_correlation,common_correlation, shareX = T, shareY = T) %>% 
+    layout(title = list(text = "Infer LD Sumstat Correlation"), xaxis = list(title = "Imputed Zscores"),yaxis = list(title = "True Zscores"))
+  return(correlation)
 }
 
 

@@ -1,9 +1,7 @@
-#Test running InferLD
-#source("simulate_GWAS/simulation_functions.R")
-set.seed(234)
-x = run_InferLD(munged_genotyped_summary_statistics = "hapgen2_sim_data/genotyped_sumstats_munged",
-            reference_haplotypes                    = "hapgen2_sim_data/reference_panel.haps",
-            reference_legend                        = "hapgen2_sim_data/reference_panel.legend",
-            case_control_constant                   = 500)
-x = readRDS("inference_results/inference.RData")
-plot(x$log_likelihood)
+#MWE for InferLD precision
+#Build the
+install.packages("InferLD_0.1.0.tar.gz", repos = NULL)
+library(InferLD)
+
+run_InferLD(reference_haplotypes = 'reference_haplotypes_filtered')
+evaluate_InferLD_sumstat_accuracy()
