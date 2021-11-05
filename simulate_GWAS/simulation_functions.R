@@ -79,7 +79,6 @@ subset_ancestry = function(ancestry,
   }
 }
 
-#subset_ancestry("EUR")
 #Generate the recombination rate maps given the data
 generate_HAPGEN2_recomb_map = function(ancestry,
                                        region  = c(1,17100000)){
@@ -169,7 +168,7 @@ convert_HAPGEN_to_PLINK = function(){
 
 #Run the imputation
 fizi_impute = function(){
-  system("fizi impute hapgen2_sim_data/genotyped_sumstats_munged hapgen2_sim_data/ref_panel --out hapgen2_sim_data/imputed_sumstats --min-prop 0.0001 --verbose --window-size 1499205  --ridge-term 0.9")
+  system("fizi impute hapgen2_sim_data/genotyped_sumstats_munged hapgen2_sim_data/ref_panel --out hapgen2_sim_data/imputed_sumstats --min-prop 0.0001 --verbose --window-size 1499205  --ridge-term 0.1")
 }
 
 #Run simulated benchmarking for a single region and single population group 
@@ -294,7 +293,7 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
     inference_results = LD_inference(ref_panel_haplotypes = reference_haplotypes_filtered,
                                      fst                   = 0.1,
                                      alpha                 = 1e3,
-                                     nSamples              = 3,
+                                     nSamples              = 20,
                                      weights_resolution    = 10,
                                      likelihood_toggle     = T, 
                                      gwas_variance         = GWAS_variance,
@@ -317,13 +316,13 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
   # filter_and_match_SNPs(munged_genotyped_summary_statistics = munged_genotyped_summary_statistics,
   #                       reference_haplotypes                = reference_haplotypes,
   #                       reference_legend                    = reference_legend, 
-  #                       inference = F)
-  # 
+  #                       inference = T)
+   
   #Read in the filtered files (haplotypes/sumstats/reference)
   munged_genotyped_summary_statistics = fread("hapgen2_sim_data/genotyped_sumstats_filtered", header = T)
   reference_haplotypes                = (fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F))
-  reference_legend                    = fread("hapgen2_sim_data/reference_panel.legend", header = T)
-  reference_haplotypes_all            = t((fread("hapgen2_sim_data/reference_panel.haps", header = F)))
+  reference_legend                    = fread("hapgen2_sim_data/ref_panel.legend", header = T)
+  reference_haplotypes_all            = t(fread("hapgen2_sim_data/ref_panel.haps", header = F))
   
   #Calculate LD given the wts
   inferred_LD = (cov.wt(x = reference_haplotypes_all, wt = wts, cor = T))$cor
@@ -341,7 +340,6 @@ run_InferLD = function(munged_genotyped_summary_statistics,  #These are the geno
   colnames(imputed_results) = c("SNP","Z")
   print(dim(imputed_results))
   write.table(imputed_results, file = "imputation_results/imputation_test", quote = F, col.names = T, row.names = F)
-  #inference_diagnostics()
   # return()
 }
 
@@ -367,7 +365,7 @@ inference_diagnostics = function(reference_legend) #Read in the full reference l
   #Get correlation
   r2_correlation_full = signif(summary(lm(inferred_af~true_afs))$r.squared,3)
   #Plot both the correlation with the true allele frequencies and the imputed allele frequencies (included and withheld SNPs)
-  reference_haplotypes_filtered = fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F)
+  reference_haplotypes_filtered = (fread("hapgen2_sim_data/reference_haplotypes_filtered", header = F))
   reference_af         = colMeans(reference_haplotypes_filtered)
   #Convert AFs to the MAF 
   reference_af[reference_af > 0.5] <- 1 - reference_af[reference_af > 0.5]
@@ -375,8 +373,8 @@ inference_diagnostics = function(reference_legend) #Read in the full reference l
   #Also find the AF of the imputed SNPs (those not included in InferLD inference process)
   #Find out what SNP IDs those are
   #Read in the non-filtered SNP IDs
-  reference_legend_all     = fread("hapgen2_sim_data/reference_panel.legend", header = T)   #All SNPs 
-  reference_haplotypes_all = t(fread("hapgen2_sim_data/reference_panel.haps", header = F))  #All SNPs 
+  reference_legend_all     = fread("hapgen2_sim_data/ref_panel.legend", header = T)   #All SNPs 
+  reference_haplotypes_all = t(fread("hapgen2_sim_data/ref_panel.haps", header = F))  #All SNPs 
   
   #Find SNPs in reference legend that are not in the filtered file
   snps_ids_imputed        = reference_legend_all[which(!reference_legend_all$id %in% reference_legend_filtered$id)]$id

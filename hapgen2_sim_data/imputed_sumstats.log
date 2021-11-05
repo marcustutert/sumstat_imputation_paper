@@ -8,20 +8,20 @@ fizi impute
 	--min-prop 0.0001
 	--verbose
 	--window-size 1499205
-	--ridge-term 0.9
+	--ridge-term 0.1
 
 Starting log...
-[2021-10-19 12:25:26 - INFO] Preparing GWAS summary file
-[2021-10-19 12:25:27 - INFO] Preparing reference SNP data
-[2021-10-19 12:25:27 - INFO] Starting summary statistics imputation with window size 1499205.0 and buffer size 250000.0
-[2021-10-19 12:25:27 - DEBUG] Subsetting GWAS data by 22:15800678 - 22:17349883
-[2021-10-19 12:25:27 - DEBUG] Subsetting reference SNP data by 22:15800678 - 22:17349883
-[2021-10-19 12:25:27 - INFO] Starting imputation at region 22:16050678 - 22:17099883
-[2021-10-19 12:25:27 - DEBUG] Proportion of observed-SNPs / total-SNPs = 0.704
-[2021-10-19 12:25:27 - DEBUG] Flipped 0 alleles to match reference
-[2021-10-19 12:25:27 - DEBUG] Estimating LD for 2053 SNPs
-[2021-10-19 12:25:27 - DEBUG] Partitioning LD into quadrants
-[2021-10-19 12:25:27 - DEBUG] Computing inverse of variance-covariance matrix for 1445 observed SNPs
-[2021-10-19 12:25:28 - DEBUG] Imputing 608 SNPs from 1445 observed scores
-[2021-10-19 12:25:28 - INFO] Completed imputation at region 22:16050678 - 22:17099883
-[2021-10-19 12:25:28 - INFO] Finished summary statistic imputation
+[2021-10-19 15:36:37 - INFO] Preparing GWAS summary file
+[2021-10-19 15:36:37 - INFO] Preparing reference SNP data
+[2021-10-19 15:36:37 - INFO] Starting summary statistics imputation with window size 1499205.0 and buffer size 250000.0
+[2021-10-19 15:36:37 - DEBUG] Subsetting GWAS data by 22:15800678 - 22:17349883
+[2021-10-19 15:36:37 - DEBUG] Subsetting reference SNP data by 22:15800678 - 22:17349883
+[2021-10-19 15:36:37 - INFO] Starting imputation at region 22:16050678 - 22:17099883
+[2021-10-19 15:36:37 - DEBUG] Proportion of observed-SNPs / total-SNPs = 0.704
+[2021-10-19 15:36:37 - DEBUG] Flipped 0 alleles to match reference
+[2021-10-19 15:36:37 - DEBUG] Estimating LD for 1781 SNPs
+[2021-10-19 15:36:37 - DEBUG] Partitioning LD into quadrants
+[2021-10-19 15:36:37 - DEBUG] Computing inverse of variance-covariance matrix for 1254 observed SNPs
+[2021-10-19 15:36:38 - DEBUG] Imputing 527 SNPs from 1254 observed scores
+[2021-10-19 15:36:38 - INFO] Completed imputation at region 22:16050678 - 22:17099883
+[2021-10-19 15:36:38 - INFO] Finished summary statistic imputation

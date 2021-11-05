@@ -8,11 +8,11 @@ Options in effect:
   --pfile /well/mcvean/mtutert/sumstat_imputation_paper/1000G/plink/1000G_chr22_plink
   --to-bp 17100000
 
-Hostname: rescomp1.hpc.in.bmrc.ox.ac.uk
+Hostname: rescomp2.hpc.in.bmrc.ox.ac.uk
 Working directory: /gpfs3/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper
-Start time: Wed Oct  6 13:21:26 2021
+Start time: Tue Oct 19 11:01:27 2021
 
-Random number seed: 1633522886
+Random number seed: 1634637687
 385575 MB RAM detected; reserving 192787 MB for main workspace.
 Using up to 24 threads (change this with --threads).
 2504 samples (0 females, 0 males, 2504 ambiguous; 2504 founders) loaded from
@@ -28,4 +28,4 @@ Writing hapgen2_sim_data/EUR_1000G_subset.legend ... done.
 Writing hapgen2_sim_data/EUR_1000G_subset.haps ... done.
 Writing hapgen2_sim_data/EUR_1000G_subset.sample ... done.
 
-End time: Wed Oct  6 13:21:27 2021
+End time: Tue Oct 19 11:01:27 2021

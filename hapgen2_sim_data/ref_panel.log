@@ -1,38 +1,37 @@
 PLINK v2.00aLM 64-bit Intel (25 Jun 2017)
 Options in effect:
   --allow-extra-chr
-  --data hapgen2_sim_data/HAPGEN2_EUR_simulated.controls
+  --export hapslegend
   --extract hapgen2_sim_data/snps_to_extract
+  --haps hapgen2_sim_data/AFR_1000G_subset.haps
+  --legend hapgen2_sim_data/AFR_1000G_subset.legend 22
   --maf 0.00001
-  --make-bed
   --out hapgen2_sim_data/ref_panel
 
 Hostname: rescomp2.hpc.in.bmrc.ox.ac.uk
 Working directory: /gpfs3/well/mcvean/mtutert/sumstat_imputation_paper/sumstat_imputation_paper
-Start time: Fri Oct  8 10:38:01 2021
+Start time: Tue Oct 19 15:18:38 2021
 
-Random number seed: 1633685881
+Random number seed: 1634653118
 385575 MB RAM detected; reserving 192787 MB for main workspace.
 Using up to 24 threads (change this with --threads).
-1000 samples imported from .sample file to
-hapgen2_sim_data/ref_panel-temporary.psam .
---data/--gen: 19506 variants scanned (all hardcalls).
---data/--gen: hapgen2_sim_data/ref_panel-temporary.pgen +
+--haps + --legend: 19521 variants scanned.
+--haps + --legend: hapgen2_sim_data/ref_panel-temporary.pgen +
+hapgen2_sim_data/ref_panel-temporary.psam +
 hapgen2_sim_data/ref_panel-temporary.pvar written.
-1000 samples (0 females, 0 males, 1000 ambiguous; 1000 founders) loaded from
+661 samples (0 females, 0 males, 661 ambiguous; 661 founders) loaded from
 hapgen2_sim_data/ref_panel-temporary.psam.
-19506 variants loaded from hapgen2_sim_data/ref_panel-temporary.pvar.
-1 binary phenotype loaded (0 cases, 1000 controls).
+19521 variants loaded from hapgen2_sim_data/ref_panel-temporary.pvar.
+Note: No phenotype data present.
 --extract: 2602 variants remaining.
-1000 samples (0 females, 0 males, 1000 ambiguous; 1000 founders) remaining
-after main filters.
-0 cases and 1000 controls remaining after main filters.
+661 samples (0 females, 0 males, 661 ambiguous; 661 founders) remaining after
+main filters.
 Calculating allele frequencies... done.
-31 variants removed due to minor allele threshold(s)
+352 variants removed due to minor allele threshold(s)
 (--maf/--max-maf/--mac/--max-mac).
-2571 variants remaining after main filters.
-Writing hapgen2_sim_data/ref_panel.bed ... done.
-Writing hapgen2_sim_data/ref_panel.bim ... done.
-Writing hapgen2_sim_data/ref_panel.fam ... done.
+2250 variants remaining after main filters.
+Writing hapgen2_sim_data/ref_panel.legend ... done.
+Writing hapgen2_sim_data/ref_panel.haps ... done.
+Writing hapgen2_sim_data/ref_panel.sample ... done.
 
-End time: Fri Oct  8 10:38:01 2021
+End time: Tue Oct 19 15:18:39 2021
